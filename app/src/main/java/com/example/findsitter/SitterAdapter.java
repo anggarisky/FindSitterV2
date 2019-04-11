@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -28,8 +29,12 @@ public class SitterAdapter extends RecyclerView.Adapter<SitterAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
-        myViewHolder.xcleaner_id.setText(sitter.get(i).getCleaner_id());
+
+
         myViewHolder.xcleaner_name.setText(sitter.get(i).getCleaner_name());
+        myViewHolder.xcleaner_id.setText(sitter.get(i).getCleaner_id());
+
+
     }
 
     @Override
@@ -39,13 +44,14 @@ public class SitterAdapter extends RecyclerView.Adapter<SitterAdapter.MyViewHold
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView xcleaner_id, xcleaner_name;
+        TextView xcleaner_name, xcleaner_id;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            xcleaner_id = itemView.findViewById(R.id.xcleaner_id);
             xcleaner_name = itemView.findViewById(R.id.xcleaner_name);
+            xcleaner_id = itemView.findViewById(R.id.xcleaner_id);
+
 
         }
     }

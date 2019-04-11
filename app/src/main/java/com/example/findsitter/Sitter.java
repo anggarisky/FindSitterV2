@@ -2,24 +2,13 @@ package com.example.findsitter;
 
 public class Sitter {
 
-    String cleaner_id, cleaner_name, latDiff, lngDiff;
-
+    String cleaner_name, cleaner_id;
 
     public Sitter() {
     }
 
-    public Sitter(String cleaner_id, String cleaner_name, String latDiff, String lngDiff) {
-        this.cleaner_id = cleaner_id;
+    public Sitter(String cleaner_name, String cleaner_id) {
         this.cleaner_name = cleaner_name;
-        this.latDiff = latDiff;
-        this.lngDiff = lngDiff;
-    }
-
-    public String getCleaner_id() {
-        return cleaner_id;
-    }
-
-    public void setCleaner_id(String cleaner_id) {
         this.cleaner_id = cleaner_id;
     }
 
@@ -31,19 +20,11 @@ public class Sitter {
         this.cleaner_name = cleaner_name;
     }
 
-    public String getLatDiff() {
-        return latDiff;
+    public String getCleaner_id() {
+        return cleaner_id;
     }
 
-    public void setLatDiff(String latDiff) {
-        this.latDiff = latDiff;
-    }
-
-    public String getLngDiff() {
-        return lngDiff;
-    }
-
-    public void setLngDiff(String lngDiff) {
-        this.lngDiff = lngDiff;
+    public void setCleaner_id(String cleaner_id) {
+        this.cleaner_id = cleaner_id;
     }
 }
