@@ -10,15 +10,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SitterAdapter extends RecyclerView.Adapter<SitterAdapter.MyViewHolder> {
 
     Context context;
-    ArrayList<Sitter> sitter;
+    Object[] sitters;
+    HashMap<String, Sitter> sitter;
 
-    public SitterAdapter(Context c, ArrayList<Sitter> p){
+    public SitterAdapter(Context c, HashMap<String, Sitter> p, Object[] s){
         context = c;
         sitter = p;
+        sitters = s;
     }
 
     @NonNull
@@ -28,11 +31,24 @@ public class SitterAdapter extends RecyclerView.Adapter<SitterAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final MyViewHolder myViewHolder, final int i) {
+        Sitter data = (Sitter) sitters[i];
 
+        myViewHolder.xcleaner_name.setText(data.getCleaner_name());
+        myViewHolder.xcleaner_id.setText(data.getCleaner_id());
 
-        myViewHolder.xcleaner_name.setText(sitter.get(i).getCleaner_name());
-        myViewHolder.xcleaner_id.setText(sitter.get(i).getCleaner_id());
+        final String getCleanerId = data.getCleaner_id();
+
+        myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "item " + getCleanerId + " pos: " + i, Toast.LENGTH_SHORT).show();
+//                Intent axd = new Intent(context, ProfileAct.class );
+//                axd.putExtra("cleaner_id", getCleanerId);
+//                context.startActivity(axd);
+//                ((MainActivity) context).finish();
+            }
+        });
 
 
     }
@@ -40,6 +56,12 @@ public class SitterAdapter extends RecyclerView.Adapter<SitterAdapter.MyViewHold
     @Override
     public int getItemCount() {
         return sitter.size();
+    }
+
+    public void update(HashMap<String, Sitter> list, Object[] values) {
+        this.sitters = values;
+        this.sitter = list;
+        this.notifyDataSetChanged();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {

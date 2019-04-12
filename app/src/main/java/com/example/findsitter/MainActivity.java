@@ -43,6 +43,10 @@ import com.nabinbhandari.android.permissions.PermissionHandler;
 import com.nabinbhandari.android.permissions.Permissions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView sitter_place;
     DatabaseReference reference, reference2, reference3, reference4;
 
-    ArrayList<Sitter> list;
+    HashMap<String, Sitter> list;
     SitterAdapter sitterAdapter;
 
 
@@ -71,18 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
         sitter_place.setLayoutManager(new LinearLayoutManager(this));
         sitter_place.setHasFixedSize(true);
-        list = new ArrayList<Sitter>();
+        list = new HashMap<String, Sitter>();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         locationRequest = new LocationRequest();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-//        locationRequest.setInterval(3000);
-//        locationRequest.setFastestInterval(3000);
 
         requestPermission();
 
-        sitterAdapter = new SitterAdapter(MainActivity.this, list);
-
+        sitterAdapter = new SitterAdapter(MainActivity.this, list, list.values().toArray());
+        sitter_place.setAdapter(sitterAdapter);
     }
 
     public void requestLoc(){
@@ -103,34 +105,36 @@ public class MainActivity extends AppCompatActivity {
                         reference = FirebaseDatabase.getInstance().getReference("Users").child("Location");
                         GeoFire geoFire = new GeoFire(reference);
 
-                        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 100);
+                        GeoQuery geoQuery = geoFire.queryAtLocation(new GeoLocation(latitude, longitude), 0.1);
 
                         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
                             @Override
                             public void onKeyEntered(final String key, GeoLocation location) {
 
-                                Query locationDataQuery = FirebaseDatabase.getInstance().getReference("Users").child("Cleaner").child(key).orderByKey();
+                                Query locationDataQuery = FirebaseDatabase.getInstance().getReference("Users").child("Cleaner").child(key);
 
-                                locationDataQuery.addValueEventListener(new ValueEventListener() {
+                                locationDataQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                         if(dataSnapshot.exists()){
 
-                                            list.clear();
-
                                             for(DataSnapshot dataSnapshot1: dataSnapshot.getChildren()){
                                                 Sitter p = dataSnapshot1.getValue(Sitter.class);
-                                                list.add(p);
 
+                                                list.put(p.cleaner_id, p);
                                             }
 
-                                            sitterAdapter.notifyDataSetChanged();
-                                            sitter_place.setAdapter(sitterAdapter);
+                                            sitterAdapter.update(list, list.values().toArray());
 
-                                            Toast.makeText(getApplicationContext(), "Data Ada", Toast.LENGTH_SHORT).show();
-                                        }
-                                        else {
-                                            Toast.makeText(getApplicationContext(), "Data Kosong", Toast.LENGTH_SHORT).show();
+                                            Integer rand = new Random().nextInt(sitterAdapter.getItemCount());
+
+                                            Sitter dataSelected = (Sitter) list.values().toArray()[rand];
+
+
+                                            Toast.makeText(getApplicationContext(), "Data Ada, index ke " + dataSelected.cleaner_id, Toast.LENGTH_SHORT).show();
+
+                                        } else {
+
                                         }
                                     }
 
@@ -144,6 +148,14 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onKeyExited(String key) {
+
+                                list.remove(key);
+
+                                sitterAdapter.update(list, list.values().toArray());
+
+                                Toast.makeText(getApplicationContext(), key + " left", Toast.LENGTH_SHORT).show();
+//                                finish();
+//                                startActivity(getIntent());
 
                             }
 
@@ -175,8 +187,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void requestPermission(){
         String[] permissions = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
         Permissions.check(this/*context*/, permissions, null/*rationale*/, null/*options*/, new PermissionHandler() {
@@ -187,23 +197,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    @Override
-//    protected void onStop() {
-//        super.onStop();
-//
-//        reference3 = FirebaseDatabase.getInstance().getReference().child("Users").child("Location").child(user_id);
-//        reference3.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                dataSnapshot.getRef().removeValue();
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 }

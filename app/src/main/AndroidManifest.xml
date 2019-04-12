@@ -12,9 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DummyCreateUserAct"></activity>
+        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ProfileAct" />
+        <activity android:name=".DummyCreateUserAct" />
         <activity android:name=".LoginAct" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".IddleAct">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
