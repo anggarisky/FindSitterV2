@@ -1,6 +1,7 @@
 package com.example.findsitter;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Handler;
@@ -129,6 +130,10 @@ public class MainActivity extends AppCompatActivity {
                                             Integer rand = new Random().nextInt(sitterAdapter.getItemCount());
 
                                             Sitter dataSelected = (Sitter) list.values().toArray()[rand];
+
+                                            Intent axs = new Intent(MainActivity.this, ProfileAct.class);
+                                            axs.putExtra("cleaner_id", dataSelected.cleaner_id);
+                                            startActivity(axs);
 
 
                                             Toast.makeText(getApplicationContext(), "Data Ada, index ke " + dataSelected.cleaner_id, Toast.LENGTH_SHORT).show();

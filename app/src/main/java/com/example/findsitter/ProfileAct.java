@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +17,8 @@ public class ProfileAct extends AppCompatActivity {
 
     DatabaseReference reference;
 
+    TextView textProvider, textId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,14 +27,20 @@ public class ProfileAct extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         final String cleaner_id_ku = bundle.getString("cleaner_id");
 
+        textProvider = findViewById(R.id.textProvider);
+        textId = findViewById(R.id.textId);
 
 
-        reference = FirebaseDatabase.getInstance().getReference("Users").child("Location").child(cleaner_id_ku);
+
+        reference = FirebaseDatabase.getInstance().getReference("Users").child("Cleaner").child(cleaner_id_ku).child("info");
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
-                    Toast.makeText(getApplicationContext(), cleaner_id_ku, Toast.LENGTH_LONG).show();
+
+                    textProvider.setText("You chose: " + dataSnapshot.child("cleaner_name").getValue().toString());
+                    textId.setText("You chose: " + dataSnapshot.child("cleaner_id").getValue().toString());
+
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Cleaner offline", Toast.LENGTH_SHORT).show();
